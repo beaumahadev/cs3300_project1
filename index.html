@@ -9,6 +9,10 @@
 <script id = "Load Data">
 //All the code for loading from our tsv into arrys
 
+var satisfactionDict;
+var sleepDict;
+var incomeDict;
+
 
 // This function will be applied to all rows. Select three columns, change names, and convert strings to numbers.
 
@@ -16,31 +20,29 @@
 
 //creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
 function createDataDict(tsv, col_key, col_value){ 
+	var dict={};
 	var newfunction= function(tsv, col_key, col_value){
-		var dict={}
-d3.tsv(tsv, function (error, data) {
-
-  data.forEach(function(d) {
-  	var headings=Object.keys(d);
-	dict[d[(headings[col_key])]]=d[(headings[col_value])];
-  });
-
-});
-return dict;
-
-};
-return newfunction;
+		d3.tsv(tsv, function (error, data) {
+  		data.forEach(function(d) {
+  			var headings=Object.keys(d);
+  			dict[d[(headings[col_key])]]=d[(headings[col_value])];
+		});
+  	});
+		return dict;
+	};
+	return newfunction;
 }
 
 
-var satisfactionDict=createDataDict()("hapiness.tsv",1,2);
-var sleepDict=createDataDict()("sleep.tsv",0,1);
+satisfactionDict=createDataDict()("hapiness.tsv",1,2);
+sleepDict=createDataDict()("sleep.tsv",0,1);
+incomeDict=createDataDict()("income.tsv",6,4);
+
+console.log(satisfactionDict.Utah);
 
 
 
-
-
-</script>>
+</script>
 
 </body>
 </html>
