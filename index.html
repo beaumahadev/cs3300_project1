@@ -1,0 +1,46 @@
+<html>
+<head>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+
+
+<script id = "Load Data">
+//All the code for loading from our tsv into arrys
+
+
+// This function will be applied to all rows. Select three columns, change names, and convert strings to numbers.
+
+
+
+//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
+function createDataDict(tsv, col_key, col_value){ 
+	var newfunction= function(tsv, col_key, col_value){
+		var dict={}
+d3.tsv(tsv, function (error, data) {
+
+  data.forEach(function(d) {
+  	var headings=Object.keys(d);
+	dict[d[(headings[col_key])]]=d[(headings[col_value])];
+  });
+
+});
+return dict;
+
+};
+return newfunction;
+}
+
+
+var satisfactionDict=createDataDict()("hapiness.tsv",1,2);
+var sleepDict=createDataDict()("sleep.tsv",0,1);
+
+
+
+
+
+</script>>
+
+</body>
+</html>
