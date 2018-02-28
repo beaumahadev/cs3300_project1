@@ -1,6 +1,11 @@
 <html>
 <head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<style>
+body { font-family: 'Crimson Text', Calibri, sans-serif; }
+svg { border: solid #ccc 1px; }
+path.lineGraph { fill: none; stroke-width: 2; }
+</style>
 </head>
 
 <body>
@@ -37,11 +42,25 @@ function createDataDict(tsv, col_key, col_value){
 satisfactionDict=createDataDict()("hapiness.tsv",1,2);
 sleepDict=createDataDict()("sleep.tsv",0,1);
 incomeDict=createDataDict()("income.tsv",6,4);
-
-console.log(satisfactionDict.Utah);
-
+</script>
 
 
+<svg height="400" width="400">
+</svg>
+
+<script>
+var svg = d3.select("svg");
+console.log(sleepDict);
+for (var key in sleepDict){
+	if (dictionary.hasOwnProperty(key)) {           
+        console.log(key, dictionary[key]);
+    }
+	console.log("here");
+	svg.append("circle")
+	.attr("cx", Number(sleepDict[key]))
+	.attr("cx",Number(sleepDict[key]))
+	.attr("r", 3);
+}
 </script>
 
 </body>
