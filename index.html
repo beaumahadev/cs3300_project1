@@ -1,4 +1,5 @@
 <html>
+
 <head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <style>
@@ -8,60 +9,64 @@ path.lineGraph { fill: none; stroke-width: 2; }
 </style>
 </head>
 
-<body>
+	<body>
+
+		<svg height="400" width="400"></svg>
+		<script id = "Load Data">
+			//All the code for loading from our tsv into arrys
+
+			var satisfactionDict;
+			var sleepDict;
+			var incomeDict;
+
+			//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
+			function createDataDict(tsv, col_key, col_value){ 
+				var dict={};
+				var newfunction= function(tsv, col_key, col_value){
+					d3.tsv(tsv, function (error, data) {
+					data.forEach(function(d) {
+						var headings=Object.keys(d);
+						dict[d[(headings[col_key])]]=d[(headings[col_value])];
+					});
+				});
+					return dict;
+				};
+				return newfunction;
+			}
 
 
-<script id = "Load Data">
-//All the code for loading from our tsv into arrys
-
-var satisfactionDict;
-var sleepDict;
-var incomeDict;
+			satisfactionDict=createDataDict()("hapiness.tsv",1,2);
+			sleepDict=createDataDict()("sleep.tsv",0,1);
+			incomeDict=createDataDict()("income.tsv",6,4);
 
 
-// This function will be applied to all rows. Select three columns, change names, and convert strings to numbers.
+			  setTimeout(function() {
+			    buildViz();
+			  }, 250);
+
+			
 
 
-
-//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
-function createDataDict(tsv, col_key, col_value){ 
-	var dict={};
-	var newfunction= function(tsv, col_key, col_value){
-		d3.tsv(tsv, function (error, data) {
-  		data.forEach(function(d) {
-  			var headings=Object.keys(d);
-  			dict[d[(headings[col_key])]]=d[(headings[col_value])];
-		});
-  	});
-		return dict;
-	};
-	return newfunction;
-}
+			//create the visulization 
+			function buildViz(){
 
 
-satisfactionDict=createDataDict()("hapiness.tsv",1,2);
-sleepDict=createDataDict()("sleep.tsv",0,1);
-incomeDict=createDataDict()("income.tsv",6,4);
-</script>
+				console.log(JSON.stringify(sleepDict));
+				console.log(JSON.stringify(incomeDict));
+				console.log(JSON.stringify(satisfactionDict));
+				console.log(satisfactionDict.Utah);
 
+				var svg = d3.select("svg");
+				for (var i=0; i < sleepDict.length;i++){}
+				svg.append("circle")
+				//.attr("cx", Number(sleepDict[key]))
+				//.attr("cx",Number(sleepDict[key]))
+				.attr("r", 3);
+			}
+			
+			
 
-<svg height="400" width="400">
-</svg>
-
-<script>
-var svg = d3.select("svg");
-console.log(sleepDict);
-for (var key in sleepDict){
-	if (dictionary.hasOwnProperty(key)) {           
-        console.log(key, dictionary[key]);
-    }
-	console.log("here");
-	svg.append("circle")
-	.attr("cx", Number(sleepDict[key]))
-	.attr("cx",Number(sleepDict[key]))
-	.attr("r", 3);
-}
-</script>
+		</script>
 
 </body>
 </html>
