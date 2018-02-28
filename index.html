@@ -46,22 +46,20 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 			
 
-
 			//create the visulization 
 			function buildViz(){
 
 
-				console.log(JSON.stringify(sleepDict));
-				console.log(JSON.stringify(incomeDict));
-				console.log(JSON.stringify(satisfactionDict));
-				console.log(satisfactionDict.Utah);
 
 				var svg = d3.select("svg");
-				for (var i=0; i < sleepDict.length;i++){}
-				svg.append("circle")
-				//.attr("cx", Number(sleepDict[key]))
-				//.attr("cx",Number(sleepDict[key]))
-				.attr("r", 3);
+				for (var key in sleepDict){
+					console.log(sleepDict[key]);
+					svg.append("circle")
+					.attr("cx", Number(sleepDict[key]))
+					.attr("cx",Number(sleepDict[key]))
+					.attr("r", 3);
+
+				}
 			}
 			
 			
