@@ -59,12 +59,14 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 
 				showMap();
+
+				//putting circles on test "scatterplot"
 				var svg = d3.select("svg");
 				for (var key in sleepDict){
 					svg.append("circle")
 					.attr("cx", Number(sleepDict[key]))
-					.attr("cx",Number(sleepDict[key]))
-					.attr("r", 3);
+					.attr("cy",Number(sleepDict[key]))
+					.attr("r", 6);
 
 				}
 			}
