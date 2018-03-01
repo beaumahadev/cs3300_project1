@@ -12,12 +12,17 @@ path.lineGraph { fill: none; stroke-width: 2; }
 	<body>
 
 		<svg height="400" width="400"></svg>
+		<svg width="960" height="600" id="map"></svg>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/topojson.v2.min.js"></script>
+
 		<script id = "Load Data">
 			//All the code for loading from our tsv into arrys
 
 			var satisfactionDict;
 			var sleepDict;
 			var incomeDict;
+			var politicalDict;
 
 			//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
 			function createDataDict(tsv, col_key, col_value){ 
@@ -38,6 +43,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			satisfactionDict=createDataDict()("hapiness.tsv",1,2);
 			sleepDict=createDataDict()("sleep.tsv",0,1);
 			incomeDict=createDataDict()("income.tsv",6,4);
+			politicalDict=createDataDict()("political.tsv",0,1);
 
 
 			  setTimeout(function() {
@@ -48,12 +54,13 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 			//create the visulization 
 			function buildViz(){
+				console.log(politicalDict.Alabama);
+				console.log(sleepDict.Alabama);
 
 
-
+				showMap();
 				var svg = d3.select("svg");
 				for (var key in sleepDict){
-					console.log(sleepDict[key]);
 					svg.append("circle")
 					.attr("cx", Number(sleepDict[key]))
 					.attr("cx",Number(sleepDict[key]))
@@ -61,10 +68,66 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 				}
 			}
-			
-			
 
-		</script>
+			function showMap(){
+				
+				var stateArray;
+				
+				var svg = d3.select("#map");
+
+				var path = d3.geoPath();
+
+				var divergingColors = ["#d8b365", "#f5f5f5", "#5ab4ac"];
+				var sequentialColors = ['#edf8fb','#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
+
+				var populationScale = d3.scaleLinear().domain([-5, 0, 5]).range(divergingColors);
+				var percentScale = d3.scaleLinear().domain([0, 25, 50, 75, 100]).range(sequentialColors);
+
+				
+
+				d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
+				  if (error) throw error;
+
+				  states = topojson.feature(us, us.objects.states);
+				  stateArray=states.features;
+
+				  svg.append("g")
+				      .attr("class", "states")
+				    .selectAll("path")
+				    .data(topojson.feature(us, us.objects.states).features)
+				    .enter().append("path")
+				      .attr("d", path);
+
+				  svg.append("path")
+				      .attr("class", "state-borders")
+				      .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
+
+				 var paths = svg.selectAll("path.state").data(states.features);
+
+				  paths
+				  .style("fill", function (county) {
+				    // Fill this in
+				    var countyData = usdaAtlas.get(county.id);
+				    if(countyData){
+				      return scale(countyData[variable]);
+				    }
+				    
+
+				  })
+
+
+				
+
+				});
+
+
+			}
+
+
+			
+</script>
+
+
 
 </body>
 </html>
