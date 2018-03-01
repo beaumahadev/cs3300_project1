@@ -12,9 +12,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 	<body>
 
 		<svg height="400" width="400"></svg>
-		<svg width="960" height="600" id="sleepmap"></svg>
-		<svg width="960" height="600" id="satisfactionmap"></svg>
-		<svg width="960" height="600" id="incomemap"></svg>
+		<svg width="480" height="300" id="sleepmap"></svg>
+		<svg width="480" height="300" id="satisfactionmap"></svg>
+		<svg width="480" height="300" id="incomemap"></svg>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 
@@ -67,18 +67,23 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				
 				var svgsleep = d3.select("#sleepmap");
 				var svgsatisfaction= d3.select("#satisfactionmap");
-
+				var svgincome= d3.select("#incomemap");
+				var keys =  Object.keys(sleepDict);
 
 				var path = d3.geoPath();
 				var projection = d3.geoAlbersUsa().scale(75);
 
 				var scaleSleep = d3.scaleQuantize()
     			.domain([50,72])
-    			.range(["#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"]);
+    			.range(["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"]);
 
     			var scaleSatisfaction = d3.scaleQuantize()
     			.domain([30,72])
-    			.range(['#edf8fb','#b2e2e2','#66c2a4','#2ca25f','#006d2c']);
+    			.range(['#b2e2e2','#66c2a4','#2ca25f','#006d2c']);
+
+    			var scaleIncome = d3.scaleQuantize()
+    			.domain([50000,70000])
+    			.range(["#ffb380","#ff944d","#ff751a","#e65c00", "#993d00","#4d1f00"]);
 
 				var states;
 
@@ -94,13 +99,14 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				  
 				  showMap(scaleSleep, sleepDict, svgsleep);
 				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction);
+				  showMap(scaleIncome, incomeDict, svgincome);
 				}
 
 
 
 				function showMap(scale, dict, svg) {
 				  // Create or modify paths for each country
-				  var keys =  Object.keys(dict);
+				  
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
