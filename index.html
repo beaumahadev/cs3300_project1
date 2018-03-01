@@ -54,11 +54,10 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 			//create the visulization 
 			function buildViz(){
-				console.log(politicalDict.Alabama);
-				console.log(sleepDict.Alabama);
 
 
-				showMap();
+
+				generateMap();
 
 				//putting circles on test "scatterplot"
 				var svg = d3.select("svg");
@@ -71,57 +70,77 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				}
 			}
 
-			function showMap(){
+			function generateMap(){
 				
 				var stateArray;
 				
 				var svg = d3.select("#map");
 
+
 				var path = d3.geoPath();
+				var projection = d3.geoAlbersUsa().scale(75);
 
 				var sequentialColors = ['#edf8fb','#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
 				var scaleSleep = d3.scaleQuantize()
-    .domain([50,72])
-    .range(["#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", 
-    "#FFFFBF", "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142"]);
+    			.domain([50,72])
+    			.range(["#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598", 
+    			"#FFFFBF", "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142"]);
 				var x=0;
 				var keys =  Object.keys(sleepDict);
+				var counties, states;
+				var usdaAtlas;
 
 
-				d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
-				  if (error) throw error;
+				d3.queue()
+				.defer(d3.json, "us.json")
+				.await(callback)
+				//d3.json("us.json", callback);
 
-				  states = topojson.feature(us, us.objects.states);
-				  stateArray=states.features;
+				function callback (error, rawMap, rawUSDA) {
+				  console.log("Code in the call-back function is only executed when every data file loads.");
 
-				  svg.append("g")
-				      .attr("class", "states")
-				    .selectAll("path")
-				    .data(topojson.feature(us, us.objects.states).features)
-				    .enter().append("path")
-				      .attr("d", path);
+				  usdaAtlas=d3.map(rawUSDA, function(d) {
+				    return Number(d.FIPS);
+				  });
+				  
+				  counties = topojson.feature(rawMap, rawMap.objects.counties);
+				  states = topojson.feature(rawMap, rawMap.objects.states);
+				  console.log(states);
+				  
+				  showMap(scaleSleep);
+				}
 
-				  svg.append("path")
-				      .attr("class", "state-borders")
-				      .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
 
 
-				 var paths = svg.selectAll("path");
+				function showMap(scale) {
+				  // Create or modify paths for each country
+				  
 
+				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], counties);
+				  pathGenerator = d3.geoPath().projection(projection);
+				  
+				  var paths = svg.selectAll("path.states").data(states.features);
+				  
+				  paths = paths.enter().append("path").attr("class", "country")
+				  .on("click", function (d) { console.log("id: "+d.id); console.log("id state: "+keys[d.id-1]);})
+				  .merge(paths);
+				  
 				  paths
+				  .transition().duration(1000)
 				  .style("fill", function (s) {
 				    // Fill this in
-				    	x=x+1;
-				    	console.log(scaleSleep(25));
-				      return scaleSleep(sleepDict[keys[x]]);
+
+				      	return scaleSleep(sleepDict[keys[s.id-1]]);
+				      
+				    
+				      
 				  
 				  })
-
-
-				
-
-				});
-
+				  .attr("d", function (county) {
+				    return pathGenerator(county);
+				  });
+				  
+				}
 
 			}
 
