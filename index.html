@@ -4,7 +4,7 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <style>
 body { font-family: 'Crimson Text', Calibri, sans-serif; }
-svg { border: solid #ccc 1px; }
+
 path.lineGraph { fill: none; stroke-width: 2; }
 </style>
 </head>
@@ -12,9 +12,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 	<body>
 
 		<svg height="400" width="400"></svg>
-		<svg width="480" height="300" id="sleepmap"></svg>
-		<svg width="480" height="300" id="satisfactionmap"></svg>
-		<svg width="480" height="300" id="incomemap"></svg>
+		<svg width="480" height="400" id="sleepmap"></svg>
+		<svg width="480" height="400" id="satisfactionmap"></svg>
+		<svg width="480" height="400" id="incomemap"></svg>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 
@@ -97,20 +97,28 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				
 				  states = topojson.feature(rawMap, rawMap.objects.states);
 				  
-				  showMap(scaleSleep, sleepDict, svgsleep);
-				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction);
-				  showMap(scaleIncome, incomeDict, svgincome);
+
+
+				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
+				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction, "Life Satisfaction Score");
+				  showMap(scaleIncome, incomeDict, svgincome, "Medium Income");
 				}
 
 
 
-				function showMap(scale, dict, svg) {
+				function showMap(scale, dict, svg, heading) {
 				  // Create or modify paths for each country
 				  
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
 				  
+				  svg.append("text")
+					.text(heading)
+					.attr("x", 25)
+					.attr("y", 25)
+					.style("font-size", "12pt");
+
 				  var paths = svg.selectAll("path.states").data(states.features);
 				  
 				  paths = paths.enter().append("path").attr("class", "country")
