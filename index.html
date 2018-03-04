@@ -60,7 +60,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					var sleepExtent = d3.extent(keys, function (d) { return sleepDict[d]; });
 					var incomeExtent = d3.extent(keys, function (d) { return incomeDict[d]; });
 
-					//var areaScale = d3.scaleSqrt().domain(incomeExtent).range([1,60]);
+					var areaScale = d3.scaleSqrt().domain(incomeExtent).range([10,50]);
 					//areaScale(incomeDict[key])
 					var xScale = d3.scaleLinear().domain(sleepExtent).range([50,325]);
 					var yScale = d3.scaleLinear().domain(lifeExtent).range([325,50]); 
@@ -71,24 +71,24 @@ path.lineGraph { fill: none; stroke-width: 2; }
 							console.log(satisfactionDict[key]);
 							if(key == "Delaware"){
 								svg_icon.append("image")
-								.attr("xlink:href", "state_icons/Delaware.jpg")
+								.attr("xlink:href", "state_icons_t/Delaware.png")
 								.attr("x", xScale(sleepDict[key]))
 								.attr("y", yScale(50.65))
-								.attr("width", 20)
-								.attr("height",20)
-								.attr("opacity", .7);
+								.attr("width", areaScale(incomeDict[key]))
+								.attr("height",areaScale(incomeDict[key]))
+								.attr("opacity", .9);
 							}
 							else {
-								var string = "state_icons/";
+								var string = "state_icons_t/";
 								var string_state = key.replace(" ","_");
-								var image_link = string.concat(string_state,".jpg");
+								var image_link = string.concat(string_state,".png");
 								svg_icon.append("image")
 								.attr("xlink:href", image_link)
 								.attr("x", xScale(sleepDict[key]))
 								.attr("y", yScale(satisfactionDict[key]))
-								.attr("width", 20)
-								.attr("height",20)
-								.attr("opacity", .7);
+								.attr("width", areaScale(incomeDict[key]))
+								.attr("height",areaScale(incomeDict[key]))
+								.attr("opacity", .9);
 							}
 						}
 					});
