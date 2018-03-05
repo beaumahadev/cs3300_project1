@@ -11,7 +11,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 	<body>
 
-		<svg height="500" width="500" id="icon_plot" style="border: solid black 1px"></svg>
+		<svg height="500" width="550" id="icon_plot" style="border: solid black 1px"></svg>
 		<svg height="400" width="400"></svg>
 		<svg width="480" height="400" id="sleepmap"></svg>
 		<svg width="480" height="400" id="satisfactionmap"></svg>
@@ -60,17 +60,29 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					var sleepExtent = d3.extent(keys, function (d) { return sleepDict[d]; });
 					var incomeExtent = d3.extent(keys, function (d) { return incomeDict[d]; });
 					var areaScale = d3.scaleSqrt().domain(incomeExtent).range([20,60]);
-					var xScale = d3.scaleLinear().domain(sleepExtent).range([50,425]);
-					var yScale = d3.scaleLinear().domain(lifeExtent).range([425,50]); 
+					var sleepScale = d3.scaleLog().domain(sleepExtent).range([75,455]);
+					var yScale = d3.scaleLinear().domain(lifeExtent).range([380,30]); 
+					
+					function buildAxes(){
+						var sleepAxisScale = d3.scaleLinear().domain([55,74]).range([0,450]);
+            			var sleepAxis = d3.axisBottom(sleepAxisScale);
+						var lifeAxisScale = d3.scaleLinear().domain([32,74]).range([410,0]);
+           				var lifeAxis = d3.axisLeft(lifeAxisScale);
+            			var sectorScale = d3.scaleOrdinal(d3.schemeCategory20);
+           			 	svg_icon.append("g").call(sleepAxis).attr("transform", "translate(70,430)");
+            			svg_icon.append("g").call(lifeAxis).attr("transform", "translate(70,20)");
+            			var pathGenerator = d3.line()
+            			.x(function (d) { return xScale(sleepDict[d]); })
+            			.y(function (d) { return employmentScale(satisfactionDict[d]); });
+					}
+
 
 					keys.forEach(function (key) {
 						if (key != "District of Columbia:"){
-							console.log(key);
-							console.log(satisfactionDict[key]);
 							if(key == "Delaware"){
 								svg_icon.append("image")
 								.attr("xlink:href", "state_icons_t/Delaware.png")
-								.attr("x", xScale(sleepDict[key]))
+								.attr("x", sleepScale(sleepDict[key]))
 								.attr("y", yScale(50.65))
 								.attr("width", areaScale(incomeDict[key]))
 								.attr("height",areaScale(incomeDict[key]))
@@ -82,7 +94,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 								var image_link = string.concat(string_state,".png");
 								svg_icon.append("image")
 								.attr("xlink:href", image_link)
-								.attr("x", xScale(sleepDict[key]))
+								.attr("x", sleepScale(sleepDict[key]))
 								.attr("y", yScale(satisfactionDict[key]))
 								.attr("width", areaScale(incomeDict[key]))
 								.attr("height",areaScale(incomeDict[key]))
@@ -90,7 +102,25 @@ path.lineGraph { fill: none; stroke-width: 2; }
 							}
 						}
 					});
+
+				svg_icon.append("text")
+                .attr("x", 150)
+                .attr("y", 475)
+                .attr("font-size", "12px")
+                .attr("fill", "red")
+                .text("Percentage of Population That Sleeps 7+ Hours per Night");
+
+                svg_icon.append("text")
+                .attr("x", -290)
+                .attr("y", 30)
+                .attr("font-size", "14px")
+                .attr("fill", "red")
+                .text("Life Satisfaction (out of 100)")
+				.attr("transform","rotate(270)");
+					buildAxes();
+					
 				}
+
 			
 
 			//create the visulization 
