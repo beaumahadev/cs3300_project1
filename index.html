@@ -2,8 +2,29 @@
 
 <head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+
+
+
+
+
 <style>
 body { font-family: 'Crimson Text', Calibri, sans-serif; }
+
+
+/* body { font-family: 'Crimson Text', Calibri, sans-serif; } */
+svg { border: solid #ccc 1px; }
+path.lineGraph { fill: none; stroke-width: 2; }
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;}
+
+
 
 path.lineGraph { fill: none; stroke-width: 2; }
 </style>
@@ -15,6 +36,32 @@ path.lineGraph { fill: none; stroke-width: 2; }
 		<svg width="480" height="400" id="sleepmap"></svg>
 		<svg width="480" height="400" id="satisfactionmap"></svg>
 		<svg width="480" height="400" id="incomemap"></svg>
+		<svg height="400" width="400" id="plotone">
+		  <g id="plot">
+				<g id = "legendone">
+					<rect x="320" y="30" width="50" height="40" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" />
+					<text x="321" y="35" font-family="Verdana" font-size="5"> Political affiliation</text>
+					<rect x="325" y="40" width="5" height="5" style="fill:rgb(255,0,0)" />
+					<text x="335" y="45" font-family="Verdana" font-size="5"> Republican</text>
+					<rect x="325" y="55" width="5" height="5" style="fill:rgb(0,0,255)" />
+					<text x="335" y="60" font-family="Verdana" font-size="5"> Democratic</text>
+				</g>
+				<g id = "legendtwo">
+					<rect x="320" y="80" width="50" height="100" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" />
+					<text x="321" y="85" font-family="Verdana" font-size="5"> Average income</text>
+					<circle cx="332" cy="97" r="10" style="fill:rgb(128,0,128)" />
+					<text x="344" y="97" font-family="Verdana" font-size="5"> 68K-75K</text>
+					<circle cx="332" cy="118" r="8" style="fill:rgb(128,0,128)" />
+					<text x="344" y="118" font-family="Verdana" font-size="5"> 61K-68K</text>
+					<circle cx="332" cy="134" r="6" style="fill:rgb(128,0,128)" />
+					<text x="344" y="134" font-family="Verdana" font-size="5"> 54K-61K</text>
+					<circle cx="332" cy="150" r="4" style="fill:rgb(128,0,128)" />
+					<text x="344" y="152" font-family="Verdana" font-size="5"> 47K-54K</text>
+					<circle cx="332" cy="164" r="2" style="fill:rgb(128,0,128)" />
+					<text x="344" y="166" font-family="Verdana" font-size="5"> 40K-47K</text>
+				</g>
+		  </g>
+		</svg>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 
@@ -27,7 +74,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			var politicalDict;
 
 			//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
-			function createDataDict(tsv, col_key, col_value){ 
+			function createDataDict(tsv, col_key, col_value){
 				var dict={};
 				var newfunction= function(tsv, col_key, col_value){
 					d3.tsv(tsv, function (error, data) {
@@ -52,19 +99,46 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			    buildViz();
 			  }, 250);
 
-			
 
-			//create the visulization 
+
+			//create the visulization
 			function buildViz(){
 
 				generateMaps();
+				genplotone();
+			}
+
+			function genplotone(){
+				var svg = d3.select("#plotone");
+				var xScale = d3.scaleLinear().domain([50, 80]).range([0, 350]);
+				var dateAxis  = d3.axisBottom(xScale);
+				var yScale = d3.scaleLinear().domain([75,25]).range([0, 350]);
+				var employmentAxis = d3.axisLeft(yScale);
+				var plot = svg.select("#plot").attr("transform", "translate(40,10)");
+				plot.append("g").call(dateAxis).attr("transform", "translate(0,350)");
+				plot.append("g").call(employmentAxis).attr("transform", "translate(0,0)");
+				for (i=0; i < 50; i++){
+				    x_axis = 40 + ((Math.floor(sleepDict[(Object.keys(satisfactionDict))[i]])-50)/30*350);
+				    y_axis= 10 + ((75-Math.floor(satisfactionDict[Object.keys(satisfactionDict)[i]]))/50*350);
+				    radius = 1 + (Math.floor((Number(incomeDict[Object.keys(satisfactionDict)[i]])-40000)/1000)*10/35);
+				    if (politicalDict[Object.keys(satisfactionDict)[i]] == "Republican"){
+				      fill_color = "red";
+				    }
+				    else{
+				      fill_color = "blue";
+				    }
+				    svg.append("circle")
+				    .attr("cx", x_axis  )
+				    .attr("cy", y_axis)
+				    .attr("r", radius)
+				    .attr("fill",fill_color)
+				    .style("opacity", 0.5);;
+				  }
 			}
 
 
-
-
 			function generateMaps(){
-				
+
 				var svgsleep = d3.select("#sleepmap");
 				var svgsatisfaction= d3.select("#satisfactionmap");
 				var svgincome= d3.select("#incomemap");
@@ -94,9 +168,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 				function callback (error, rawMap, rawUSDA) {
 				  console.log("Code in the call-back function is only executed when every data file loads.");
-				
+
 				  states = topojson.feature(rawMap, rawMap.objects.states);
-				  
+
 
 
 				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
@@ -108,11 +182,11 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 				function showMap(scale, dict, svg, heading) {
 				  // Create or modify paths for each country
-				  
+
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
-				  
+
 				  svg.append("text")
 					.text(heading)
 					.attr("x", 25)
@@ -120,32 +194,32 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					.style("font-size", "12pt");
 
 				  var paths = svg.selectAll("path.states").data(states.features);
-				  
+
 				  paths = paths.enter().append("path").attr("class", "country")
 				  .on("click", function (d) { console.log("id: "+d.id); console.log("id state: "+keys[d.id-1]);})
 				  .merge(paths);
-				  
+
 				  paths
 				  .transition().duration(1000)
 				  .style("fill", function (s) {
 				    // Fill this in
 
 				      	return scale(dict[keys[s.id-1]]);
-				      
-				    
-				      
-				  
+
+
+
+
 				  })
 				  .attr("d", function (county) {
 				    return pathGenerator(county);
 				  });
-				  
+
 				}
 
 			}
 
 
-			
+
 </script>
 
 
