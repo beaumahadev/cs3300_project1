@@ -33,9 +33,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 	<body>
 
 		<svg height="500" width="550" id="icon_plot"></svg>
-		<svg width="480" height="420" id="sleepmap"></svg>
-		<svg width="480" height="420" id="satisfactionmap"></svg>
-		<svg width="480" height="420" id="incomemap"></svg>
+
 		<svg height="480" width="440" id="plotone">
 		  <g id="plot">
 				<g id = "legendone">
@@ -48,7 +46,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				</g>
 				<g id = "legendtwo">
 					<rect x="295" y="70" width="100" height="100" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" />
-					<text x="300" y="85" font-family="Verdana" font-size="10"> Average income</text>
+					<text x="300" y="85" font-family="Verdana" font-size="10"> Median income</text>
 					<circle cx="320" cy="97" r="10" style="fill:rgb(128,0,128)" />
 					<text x="335" y="97" font-family="Verdana" font-size="10"> 68K-75K</text>
 					<circle cx="320" cy="118" r="8" style="fill:rgb(128,0,128)" />
@@ -61,13 +59,16 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					<text x="335" y="166" font-family="Verdana" font-size="10"> 40K-47K</text>
 				</g>
 				<g>
-				  <text x="20" y="390" font-family="Verdana" font-size="14"> Percentage of people sleep more than 7hrs</text>
-
-				  <text font-family="Verdana" font-size="14" transform="translate(5,90)rotate(90)"> score of life satisfaction</text>
+				  <text x="20" y="390" font-family='Crimson Text' font-size="14"> Percentage of people sleep more than 7hrs</text>
+          <text x="20" y="10" font-family='Crimson Text' font-size="14"> State Happiness vs Sleep (States sized by median income)</text>
+				  <text font-family='Crimson Text' font-size="14" transform="translate(-35,90)rotate(90)"> score of life satisfaction</text>
 
 				</g>
 		  </g>
 		</svg>
+    <svg width="480" height="420" id="sleepmap"></svg>
+    <svg width="480" height="420" id="satisfactionmap"></svg>
+    <svg width="480" height="420" id="incomemap"></svg>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 
@@ -104,7 +105,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			  setTimeout(function() {
 			    buildViz();
 			  }, 250);
-			  
+
 				function buildScatterplot(sleepDict, incomeDict, satisfactionDict){
 					var svg_icon = d3.select("#icon_plot");
 					var keys =  Object.keys(sleepDict);
@@ -113,8 +114,8 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					var incomeExtent = d3.extent(keys, function (d) { return incomeDict[d]; });
 					var areaScale = d3.scaleSqrt().domain(incomeExtent).range([20,60]);
 					var sleepScale = d3.scaleLog().domain(sleepExtent).range([75,455]);
-					var yScale = d3.scaleLinear().domain(lifeExtent).range([380,30]); 
-					
+					var yScale = d3.scaleLinear().domain(lifeExtent).range([380,30]);
+
 					function buildAxes(){
 						var sleepAxisScale = d3.scaleLinear().domain([55,74]).range([0,450]);
             			var sleepAxis = d3.axisBottom(sleepAxisScale);
@@ -167,7 +168,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
                 .attr("font-size", "14px")
                 .text("Life Satisfaction (out of 100)")
 				.attr("transform","rotate(270)");
-				
+
 				svg_icon.append("text")
                 .attr("x", 155)
                 .attr("y", 30)
@@ -175,7 +176,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
                 .text("State Happiness vs Sleep (States sized by income)");
 
 				buildAxes();
-					
+
 				}
 
 
@@ -216,9 +217,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			}
 
 
-			
+
 			function generateMaps(){
-				
+
 				var svgsleep = d3.select("#sleepmap");
 				var svgsatisfaction= d3.select("#satisfactionmap");
 				var svgincome= d3.select("#incomemap");
@@ -228,11 +229,11 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				var projection = d3.geoAlbersUsa().scale(75);
 
 				var sleepColors= ["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"];
-				
+
 				var incomeColors=["#ffad33", "#ff9900", "#cc7a00", "#995c00", "#663d00", "#331f00"];
-				
+
 				var satisfactionColors=['#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
-				
+
 				showLegend(svgsleep, sleepColors,50,72);
 				showLegend(svgincome, incomeColors, 50000,70000);
 				showLegend(svgsatisfaction,satisfactionColors, 30, 72);
@@ -270,7 +271,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
-				  
+
 				  svg.append("text")
 					.text(heading)
 					.attr("x", 0)
@@ -278,22 +279,22 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					.style("font-size", "12pt");
 
 				  var paths = svg.selectAll("path.states").data(states.features);
-				  
+
 				  paths = paths.enter().append("path").attr("class", "country")
 				  .on("click", function (d) { console.log("id: "+d.id); console.log("id state: "+keys[d.id-1]);})
 				  .merge(paths);
-				  
+
 				  paths
 				  .transition().duration(1000)
 				  .style("fill", function (s) {
 				    // Fill this in
 
-				      	return scale(dict[keys[s.id-1]]);     
+				      	return scale(dict[keys[s.id-1]]);
 				  })
 				  .attr("d", function (county) {
 				    return pathGenerator(county);
 				  });
-				  
+
 				}
 
 				function showLegend(svg, stopcolors, min, max){
@@ -348,7 +349,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 			}
 
-			
+
 
 
 
