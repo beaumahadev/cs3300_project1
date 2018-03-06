@@ -240,7 +240,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				  states = topojson.feature(rawMap, rawMap.objects.states);
 				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
 				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction, "Life Satisfaction Score");
-				  showMap(scaleIncome, incomeDict, svgincome, "Medium Income");
+				  showMap(scaleIncome, incomeDict, svgincome, "Median Income");
 				  buildScatterplot(sleepDict, incomeDict, satisfactionDict);
 				}
 				function showMap(scale, dict, svg, heading) {
