@@ -156,7 +156,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 				var sleepColors= ["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"];
 				
-				var incomeColors=["#ffb380","#ff944d","#ff751a","#e65c00", "#993d00","#4d1f00"];
+				var incomeColors=["#ffad33", "#ff9900", "#cc7a00", "#995c00", "#663d00", "#331f00"];
 				
 				var satisfactionColors=['#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
 				
@@ -250,7 +250,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			      .attr("width", w)
 			      .attr("height", h - 30)
 			      .style("fill", "url(#gradient" + min +")")
-			      .attr("transform", "translate(10,30)");
+			      .attr("transform", "translate(15,30)");
 
 			    var y = d3.scaleLinear()
 			      .range([300, 0])
@@ -262,7 +262,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 			    svg.append("g")
 			      .attr("class", "y axis")
-			      .attr("transform", "translate(10,50)")
+			      .attr("transform", "translate(15,50)")
 			      .call(yAxis)
 			      .append("text")
 			      .attr("transform", "rotate(-90)")
