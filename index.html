@@ -2,8 +2,29 @@
 
 <head>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+
+
+
+
+
 <style>
 body { font-family: 'Crimson Text', Calibri, sans-serif; }
+
+
+/* body { font-family: 'Crimson Text', Calibri, sans-serif; } */
+svg { border: solid #ccc 1px; }
+path.lineGraph { fill: none; stroke-width: 2; }
+.legend rect {
+  fill:white;
+  stroke:black;
+  opacity:0.8;}
+
+
 
 path.lineGraph { fill: none; stroke-width: 2; }
 </style>
@@ -11,11 +32,50 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 	<body>
 
+<<<<<<< HEAD
 		<svg height="500" width="550" id="icon_plot" style="border: solid black 1px"></svg>
 		<svg height="400" width="400"></svg>
 		<svg width="480" height="400" id="sleepmap"></svg>
 		<svg width="480" height="400" id="satisfactionmap"></svg>
 		<svg width="480" height="400" id="incomemap"></svg>
+=======
+		
+		<svg width="480" height="420" id="sleepmap"></svg>
+		<svg width="480" height="420" id="satisfactionmap"></svg>
+		<svg width="480" height="420" id="incomemap"></svg>
+		<svg height="480" width="440" id="plotone">
+		  <g id="plot">
+				<g id = "legendone">
+					<rect x="295" y="20" width="100" height="50" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" />
+					<text x="300" y="35" font-family="Verdana" font-size="10"> Political affiliation</text>
+					<rect x="310" y="40" width="5" height="5" style="fill:rgb(255,0,0)" />
+					<text x="320" y="45" font-family="Verdana" font-size="10"> Republican</text>
+					<rect x="310" y="55" width="5" height="5" style="fill:rgb(0,0,255)" />
+					<text x="320" y="60" font-family="Verdana" font-size="10"> Democratic</text>
+				</g>
+				<g id = "legendtwo">
+					<rect x="295" y="70" width="100" height="100" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" />
+					<text x="300" y="85" font-family="Verdana" font-size="10"> Average income</text>
+					<circle cx="320" cy="97" r="10" style="fill:rgb(128,0,128)" />
+					<text x="335" y="97" font-family="Verdana" font-size="10"> 68K-75K</text>
+					<circle cx="320" cy="118" r="8" style="fill:rgb(128,0,128)" />
+					<text x="335" y="118" font-family="Verdana" font-size="10"> 61K-68K</text>
+					<circle cx="320" cy="134" r="6" style="fill:rgb(128,0,128)" />
+					<text x="335" y="134" font-family="Verdana" font-size="10"> 54K-61K</text>
+					<circle cx="320" cy="150" r="4" style="fill:rgb(128,0,128)" />
+					<text x="335" y="152" font-family="Verdana" font-size="10"> 47K-54K</text>
+					<circle cx="320" cy="164" r="2" style="fill:rgb(128,0,128)" />
+					<text x="335" y="166" font-family="Verdana" font-size="10"> 40K-47K</text>
+				</g>
+				<g>
+				  <text x="20" y="390" font-family="Verdana" font-size="14"> Percentage of people sleep more than 7hrs</text>
+
+				  <text font-family="Verdana" font-size="14" transform="translate(5,90)rotate(90)"> score of life satisfaction</text>
+
+				</g>
+		  </g>
+		</svg>
+>>>>>>> 77ca29aecd224126afdf6f86ccdbb6fe59e601bc
 		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://d3js.org/topojson.v2.min.js"></script>
 
@@ -28,7 +88,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			var politicalDict;
 
 			//creates a dictionary from given tsv given the colomn for the keys and the colomn for the values
-			function createDataDict(tsv, col_key, col_value){ 
+			function createDataDict(tsv, col_key, col_value){
 				var dict={};
 				var newfunction= function(tsv, col_key, col_value){
 					d3.tsv(tsv, function (error, data) {
@@ -121,17 +181,45 @@ path.lineGraph { fill: none; stroke-width: 2; }
 					
 				}
 
-			
 
-			//create the visulization 
+
+			//create the visulization
 			function buildViz(){
 
 				generateMaps();
+				genplotone();
+			}
+
+			function genplotone(){
+				var svg = d3.select("#plotone");
+				var xScale = d3.scaleLinear().domain([50, 80]).range([0, 350]);
+				var dateAxis  = d3.axisBottom(xScale);
+				var yScale = d3.scaleLinear().domain([75,25]).range([0, 350]);
+				var employmentAxis = d3.axisLeft(yScale);
+				var plot = svg.select("#plot").attr("transform", "translate(40,10)");
+				plot.append("g").call(dateAxis).attr("transform", "translate(0,350)");
+				plot.append("g").call(employmentAxis).attr("transform", "translate(0,0)");
+				for (i=0; i < 50; i++){
+				    x_axis = 40 + ((Math.floor(sleepDict[(Object.keys(satisfactionDict))[i]])-50)/30*350);
+				    y_axis= 10 + ((75-Math.floor(satisfactionDict[Object.keys(satisfactionDict)[i]]))/50*350);
+				    radius = 1 + (Math.floor((Number(incomeDict[Object.keys(satisfactionDict)[i]])-40000)/1000)*10/35);
+				    if (politicalDict[Object.keys(satisfactionDict)[i]] == "Republican"){
+				      fill_color = "red";
+				    }
+				    else{
+				      fill_color = "blue";
+				    }
+				    svg.append("circle")
+				    .attr("cx", x_axis  )
+				    .attr("cy", y_axis)
+				    .attr("r", radius)
+				    .attr("fill",fill_color)
+				    .style("opacity", 0.5);;
+				  }
 			}
 
 
-
-
+			
 			function generateMaps(){
 				
 				var svgsleep = d3.select("#sleepmap");
@@ -142,32 +230,37 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				var path = d3.geoPath();
 				var projection = d3.geoAlbersUsa().scale(75);
 
+				var sleepColors= ["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"];
+				
+				var incomeColors=["#ffad33", "#ff9900", "#cc7a00", "#995c00", "#663d00", "#331f00"];
+				
+				var satisfactionColors=['#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
+				
+				showLegend(svgsleep, sleepColors,50,72);
+				showLegend(svgincome, incomeColors, 50000,70000);
+				showLegend(svgsatisfaction,satisfactionColors, 30, 72);
+				//
+
 				var scaleSleep = d3.scaleQuantize()
     			.domain([50,72])
-    			.range(["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"]);
+    			.range(sleepColors);
 
     			var scaleSatisfaction = d3.scaleQuantize()
     			.domain([30,72])
-    			.range(['#b2e2e2','#66c2a4','#2ca25f','#006d2c']);
+    			.range(satisfactionColors);
 
     			var scaleIncome = d3.scaleQuantize()
     			.domain([50000,70000])
-    			.range(["#ffb380","#ff944d","#ff751a","#e65c00", "#993d00","#4d1f00"]);
+    			.range(incomeColors);
 
 				var states;
 
 				d3.queue()
 				.defer(d3.json, "us.json")
 				.await(callback)
-				//d3.json("us.json", callback);
 
-				function callback (error, rawMap, rawUSDA) {
-				  console.log("Code in the call-back function is only executed when every data file loads.");
-				
+				function callback (error, rawMap) {
 				  states = topojson.feature(rawMap, rawMap.objects.states);
-				  
-
-
 				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
 				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction, "Life Satisfaction Score");
 				  showMap(scaleIncome, incomeDict, svgincome, "Medium Income");
@@ -177,15 +270,13 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 
 				function showMap(scale, dict, svg, heading) {
-				  // Create or modify paths for each country
-				  
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
 				  
 				  svg.append("text")
 					.text(heading)
-					.attr("x", 25)
+					.attr("x", 0)
 					.attr("y", 25)
 					.style("font-size", "12pt");
 
@@ -200,11 +291,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				  .style("fill", function (s) {
 				    // Fill this in
 
-				      	return scale(dict[keys[s.id-1]]);
-				      
-				    
-				      
-				  
+				      	return scale(dict[keys[s.id-1]]);     
 				  })
 				  .attr("d", function (county) {
 				    return pathGenerator(county);
@@ -212,12 +299,62 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				  
 				}
 
+				function showLegend(svg, stopcolors, min, max){
+				var w = 300, h = 50;
+
+
+			    var legend = svg.append("defs")
+			      .append("svg:linearGradient")
+			      .attr("id", "gradient"+min)
+			      .attr("x1", "0%")
+			      .attr("y1", "100%")
+			      .attr("x2", "100%")
+			      .attr("y2", "100%")
+			      .attr("spreadMethod", "pad");
+
+			    var x = Math.floor(100/stopcolors.length)
+			    var offset=0;
+			    for(i=0;i<stopcolors.length;i++){
+			    	legend.append("stop")
+			      	.attr("offset", String(offset)+"%")
+			      	.attr("stop-color", stopcolors[i])
+			      	.attr("stop-opacity", 1);
+			      	offset += x;
+
+			    }
+
+			    svg.append("rect")
+			      .attr("width", w)
+			      .attr("height", h - 30)
+			      .style("fill", "url(#gradient" + min +")")
+			      .attr("transform", "translate(15,30)");
+
+			    var y = d3.scaleLinear()
+			      .range([300, 0])
+			      .domain([max, min]);
+
+			    var yAxis = d3.axisBottom()
+			      .scale(y)
+			      .ticks(5);
+
+			    svg.append("g")
+			      .attr("class", "y axis")
+			      .attr("transform", "translate(15,50)")
+			      .call(yAxis)
+			      .append("text")
+			      .attr("transform", "rotate(-90)")
+			      .attr("y", 0)
+			      .attr("dy", ".71em")
+			      .style("text-anchor", "end")
+			      .text("axis title");
+				}
+
 			}
 
 			
 
 
-			
+
 </script>
 
 
