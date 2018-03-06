@@ -32,10 +32,10 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 	<body>
 
-		<svg height="400" width="400"></svg>
-		<svg width="480" height="400" id="sleepmap"></svg>
-		<svg width="480" height="400" id="satisfactionmap"></svg>
-		<svg width="480" height="400" id="incomemap"></svg>
+		
+		<svg width="480" height="420" id="sleepmap"></svg>
+		<svg width="480" height="420" id="satisfactionmap"></svg>
+		<svg width="480" height="420" id="incomemap"></svg>
 		<svg height="480" width="440" id="plotone">
 		  <g id="plot">
 				<g id = "legendone">
@@ -143,8 +143,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			}
 
 
+			
 			function generateMaps(){
-
+				
 				var svgsleep = d3.select("#sleepmap");
 				var svgsatisfaction= d3.select("#satisfactionmap");
 				var svgincome= d3.select("#incomemap");
@@ -153,32 +154,37 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				var path = d3.geoPath();
 				var projection = d3.geoAlbersUsa().scale(75);
 
+				var sleepColors= ["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"];
+				
+				var incomeColors=["#ffb380","#ff944d","#ff751a","#e65c00", "#993d00","#4d1f00"];
+				
+				var satisfactionColors=['#b2e2e2','#66c2a4','#2ca25f','#006d2c'];
+				
+				showLegend(svgsleep, sleepColors,50,72);
+				showLegend(svgincome, incomeColors, 50000,70000);
+				showLegend(svgsatisfaction,satisfactionColors, 30, 72);
+				//
+
 				var scaleSleep = d3.scaleQuantize()
     			.domain([50,72])
-    			.range(["#b5d0ff","#b3b3ff", "#8080ff", "#4d4dff", "#1a1aff", "#0000e6", "#0000b3","#000080","#000066", "#00004d"]);
+    			.range(sleepColors);
 
     			var scaleSatisfaction = d3.scaleQuantize()
     			.domain([30,72])
-    			.range(['#b2e2e2','#66c2a4','#2ca25f','#006d2c']);
+    			.range(satisfactionColors);
 
     			var scaleIncome = d3.scaleQuantize()
     			.domain([50000,70000])
-    			.range(["#ffb380","#ff944d","#ff751a","#e65c00", "#993d00","#4d1f00"]);
+    			.range(incomeColors);
 
 				var states;
 
 				d3.queue()
 				.defer(d3.json, "us.json")
 				.await(callback)
-				//d3.json("us.json", callback);
 
-				function callback (error, rawMap, rawUSDA) {
-				  console.log("Code in the call-back function is only executed when every data file loads.");
-
+				function callback (error, rawMap) {
 				  states = topojson.feature(rawMap, rawMap.objects.states);
-
-
-
 				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
 				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction, "Life Satisfaction Score");
 				  showMap(scaleIncome, incomeDict, svgincome, "Medium Income");
@@ -187,39 +193,83 @@ path.lineGraph { fill: none; stroke-width: 2; }
 
 
 				function showMap(scale, dict, svg, heading) {
-				  // Create or modify paths for each country
-
 
 				  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], states);
 				  pathGenerator = d3.geoPath().projection(projection);
-
+				  
 				  svg.append("text")
 					.text(heading)
-					.attr("x", 25)
+					.attr("x", 0)
 					.attr("y", 25)
 					.style("font-size", "12pt");
 
 				  var paths = svg.selectAll("path.states").data(states.features);
-
+				  
 				  paths = paths.enter().append("path").attr("class", "country")
 				  .on("click", function (d) { console.log("id: "+d.id); console.log("id state: "+keys[d.id-1]);})
 				  .merge(paths);
-
+				  
 				  paths
 				  .transition().duration(1000)
 				  .style("fill", function (s) {
 				    // Fill this in
 
-				      	return scale(dict[keys[s.id-1]]);
-
-
-
-
+				      	return scale(dict[keys[s.id-1]]);     
 				  })
 				  .attr("d", function (county) {
 				    return pathGenerator(county);
 				  });
+				  
+				}
 
+				function showLegend(svg, stopcolors, min, max){
+				var w = 300, h = 50;
+
+
+			    var legend = svg.append("defs")
+			      .append("svg:linearGradient")
+			      .attr("id", "gradient"+min)
+			      .attr("x1", "0%")
+			      .attr("y1", "100%")
+			      .attr("x2", "100%")
+			      .attr("y2", "100%")
+			      .attr("spreadMethod", "pad");
+
+			    var x = Math.floor(100/stopcolors.length)
+			    var offset=0;
+			    for(i=0;i<stopcolors.length;i++){
+			    	legend.append("stop")
+			      	.attr("offset", String(offset)+"%")
+			      	.attr("stop-color", stopcolors[i])
+			      	.attr("stop-opacity", 1);
+			      	offset += x;
+
+			    }
+
+			    svg.append("rect")
+			      .attr("width", w)
+			      .attr("height", h - 30)
+			      .style("fill", "url(#gradient" + min +")")
+			      .attr("transform", "translate(10,30)");
+
+			    var y = d3.scaleLinear()
+			      .range([300, 0])
+			      .domain([max, min]);
+
+			    var yAxis = d3.axisBottom()
+			      .scale(y)
+			      .ticks(5);
+
+			    svg.append("g")
+			      .attr("class", "y axis")
+			      .attr("transform", "translate(10,50)")
+			      .call(yAxis)
+			      .append("text")
+			      .attr("transform", "rotate(-90)")
+			      .attr("y", 0)
+			      .attr("dy", ".71em")
+			      .style("text-anchor", "end")
+			      .text("axis title");
 				}
 
 			}
