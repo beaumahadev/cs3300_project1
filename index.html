@@ -32,26 +32,26 @@ path.lineGraph { fill: none; stroke-width: 2; }
 		<svg height="500" width="550" id="plotone">
 		  <g id="plot">
 				<g id = "legendone">
-					<rect x="295" y="20" width="100" height="50" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" transform="translate(120,75)" />
-					<text x="300" y="35" font-family="Verdana" font-size="10" transform="translate(120,75)"> Political affiliation</text>
-					<rect x="310" y="40" width="5" height="5" style="fill:rgb(255,0,0)" transform="translate(120,75)"/>
-					<text x="320" y="45" font-family="Verdana" font-size="10" transform="translate(120,75)"> Republican</text>
-					<rect x="310" y="55" width="5" height="5" style="fill:rgb(0,0,255)" transform="translate(120,75)" />
-					<text x="320" y="60" font-family="Verdana" font-size="10" transform="translate(120,75)"> Democratic</text>
+					<rect x="295" y="20" width="100" height="50" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" transform="translate(120,225)" />
+					<text x="300" y="35" font-family="Verdana" font-size="10" transform="translate(120,225)"> Political affiliation</text>
+					<rect x="310" y="40" width="5" height="5" style="fill:rgb(255,0,0)" transform="translate(120,225)"/>
+					<text x="320" y="45" font-family="Verdana" font-size="10" transform="translate(120,225)"> Republican</text>
+					<rect x="310" y="55" width="5" height="5" style="fill:rgb(0,0,255)" transform="translate(120,225)" />
+					<text x="320" y="60" font-family="Verdana" font-size="10" transform="translate(120,225)"> Democratic</text>
 				</g>
 				<g id = "legendtwo">
-					<rect x="295" y="70" width="100" height="100" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" transform="translate(120,75)" />
-					<text x="300" y="85" font-family="Verdana" font-size="10"  transform="translate(120,75)" > Median income</text>
-					<circle cx="320" cy="97" r="10" style="fill:rgb(128,0,128)"  transform="translate(120,75)"  />
-					<text x="335" y="97" font-family="Verdana" font-size="10"  transform="translate(120,75)" > 68K-75K</text>
-					<circle cx="320" cy="118" r="8" style="fill:rgb(128,0,128)"  transform="translate(120,75)"  />
-					<text x="335" y="118" font-family="Verdana" font-size="10"  transform="translate(120,75)" > 61K-68K</text>
-					<circle cx="320" cy="134" r="6" style="fill:rgb(128,0,128)"  transform="translate(120,75)"  />
-					<text x="335" y="134" font-family="Verdana" font-size="10"  transform="translate(120,75)" > 54K-61K</text>
-					<circle cx="320" cy="150" r="4" style="fill:rgb(128,0,128)"  transform="translate(120,75)" />
-					<text x="335" y="152" font-family="Verdana" font-size="10"  transform="translate(120,75)" > 47K-54K</text>
-					<circle cx="320" cy="164" r="2" style="fill:rgb(128,0,128)" transform="translate(120,75)" />
-					<text x="335" y="166" font-family="Verdana" font-size="10" transform="translate(120,75)" > 40K-47K</text>
+					<rect x="295" y="70" width="100" height="100" style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)" transform="translate(120,225)" />
+					<text x="300" y="85" font-family="Verdana" font-size="10"  transform="translate(120,225)" > Median income</text>
+					<circle cx="320" cy="97" r="10" style="fill:rgb(128,0,128)"  transform="translate(120,225)"  />
+					<text x="335" y="97" font-family="Verdana" font-size="10"  transform="translate(120,225)" > 68K-75K</text>
+					<circle cx="320" cy="118" r="8" style="fill:rgb(128,0,128)"  transform="translate(120,225)"  />
+					<text x="335" y="118" font-family="Verdana" font-size="10"  transform="translate(120,225)" > 61K-68K</text>
+					<circle cx="320" cy="134" r="6" style="fill:rgb(128,0,128)"  transform="translate(120,225)"  />
+					<text x="335" y="134" font-family="Verdana" font-size="10"  transform="translate(120,225)" > 54K-61K</text>
+					<circle cx="320" cy="150" r="4" style="fill:rgb(128,0,128)"  transform="translate(120,225)" />
+					<text x="335" y="152" font-family="Verdana" font-size="10"  transform="translate(120,225)" > 47K-54K</text>
+					<circle cx="320" cy="164" r="2" style="fill:rgb(128,0,128)" transform="translate(120,225)" />
+					<text x="335" y="166" font-family="Verdana" font-size="10" transform="translate(120,225)" > 40K-47K</text>
 				</g>
 				<g>
 				  <!-- <text x="20" y="390" font-family='Crimson Text' font-size="14"> Percentage of people sleep more than 7hrs</text> -->
@@ -165,9 +165,9 @@ path.lineGraph { fill: none; stroke-width: 2; }
 			}
 			function genplotone(){
 				var svg = d3.select("#plotone");
-				var xScale = d3.scaleLinear().domain([50, 80]).range([0, 450]);
+				var xScale = d3.scaleLinear().domain([55, 74]).range([0, 450]);
 				var dateAxis  = d3.axisBottom(xScale);
-				var yScale = d3.scaleLinear().domain([25,75]).range([410,0]);
+				var yScale = d3.scaleLinear().domain([32,74]).range([410,0]);
 				var employmentAxis = d3.axisLeft(yScale);
 				//var plot = svg.select("#plot").attr("transform", "translate(40,10)");
         var plot = svg.select("#plot");
@@ -176,8 +176,8 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				plot.append("g").call(dateAxis).attr("transform", "translate(70,430)");
 				plot.append("g").call(employmentAxis).attr("transform", "translate(70,20)");
 				for (i=0; i < 50; i++){
-				    x_axis = 70 + ((Math.floor(sleepDict[(Object.keys(satisfactionDict))[i]])-50)/30*450);
-				    y_axis= 20 + ((75-Math.floor(satisfactionDict[Object.keys(satisfactionDict)[i]]))/50*410);
+				    x_axis = 70 + ((Math.floor(sleepDict[(Object.keys(satisfactionDict))[i]])-55)/19*450);
+				    y_axis= 20 + ((74-Math.floor(satisfactionDict[Object.keys(satisfactionDict)[i]]))/42*410);
 				    radius = 1 + (Math.floor((Number(incomeDict[Object.keys(satisfactionDict)[i]])-40000)/1000)*10/35);
 				    if (politicalDict[Object.keys(satisfactionDict)[i]] == "Republican"){
 				      fill_color = "red";
@@ -240,7 +240,7 @@ path.lineGraph { fill: none; stroke-width: 2; }
 				  states = topojson.feature(rawMap, rawMap.objects.states);
 				  showMap(scaleSleep, sleepDict, svgsleep,"Percentage of Population with 7+ Hours of Sleep");
 				  showMap(scaleSatisfaction, satisfactionDict, svgsatisfaction, "Life Satisfaction Score");
-				  showMap(scaleIncome, incomeDict, svgincome, "Median Income");
+				  showMap(scaleIncome, incomeDict, svgincome, "Medium Income");
 				  buildScatterplot(sleepDict, incomeDict, satisfactionDict);
 				}
 				function showMap(scale, dict, svg, heading) {
